@@ -500,10 +500,14 @@ validkey(RSA *rsa)
 #endif
 
 #if OPENSSL_VERSION_NUMBER >= OPENSSL_VERSION_1_1
-	BIGNUM *new_d = BN_new(),
-		   *new_dmp1 = BN_new(),
-		   *new_dmq1 = BN_new(),
-		   *new_iqmp = BN_new();
+    /* The CTX we create here doesn't get freed since the RSA struct will take
+     * control of the memory allocation when we call RSA_set0_* */
+	BN_CTX	*rsa_ctx = BN_CTX_new();
+	BN_CTX_start(rsa_ctx);
+	BIGNUM *new_d = BN_CTX_get(rsa_ctx),
+		   *new_dmp1 = BN_CTX_get(rsa_ctx),
+		   *new_dmq1 = BN_CTX_get(rsa_ctx),
+		   *new_iqmp = BN_CTX_get(rsa_ctx);
 
 	BN_mod_inverse(new_d, e, lambda, ctx);	/* d */
 	BN_mod(new_dmp1, new_d, p1, ctx);		/* d mod(p - 1) */
