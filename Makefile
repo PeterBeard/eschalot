@@ -7,6 +7,9 @@ PROG1		?= eschalot
 PROG2		?= worgen
 PROG3		?= typecard
 
+MANPAGE		?= eschalot.1.gz
+MANDIR		?= /usr/local/share/man/man1
+
 PREFIX		?= /usr/local
 BINDIR		?= ${PREFIX}/bin
 
@@ -28,7 +31,9 @@ CFLAGS		+= -finline-functions
 DEBUGFLAGS	+= -g -rdynamic
 
 CC		?= cc
+GZIP		?= gzip -ck
 INSTALL		?= install -c -o root -g bin -m 755
+MANINSTALL	?= install -c -o root -g root -m 644
 RM		?= /bin/rm -f
 
 all:		${PROG1} ${PROG2}
@@ -39,17 +44,21 @@ ${PROG1}:	${PROG1}.c Makefile
 ${PROG2}:	${PROG2}.c Makefile
 		${CC} ${CFLAGS} ${WARNINGS} -o $@ ${PROG2}.c
 
+${MANPAGE}:	docs/eschalot.1.man Makefile
+		${GZIP} docs/eschalot.1.man > ${MANPAGE}
+
 # make typecard - quick overview of the basic types on the system
-${PROG3}: 	${PROG3}.c Makefile
+${PROG3}:	${PROG3}.c Makefile
 		${CC} ${CFLAGS} -o $@ ${PROG3}.c
 		./${PROG3}
 
-install:	all
+install:	all ${MANPAGE}
 		${INSTALL} ${PROG1} ${BINDIR}
 		${INSTALL} ${PROG2} ${BINDIR}
+		${MANINSTALL} ${MANPAGE} ${MANDIR}
 
 clean:
-		${RM} ${PROG1} ${PROG2} ${PROG3} *.o *.p *.d *.s *.S *~ *.core .depend
+		${RM} ${PROG1} ${PROG2} ${PROG3} ${MANPAGE} *.o *.p *.d *.s *.S *~ *.core .depend
 
 # Simple procedure to speed up basic testing on multiple platforms
 WF1		= top150adjectives.txt
