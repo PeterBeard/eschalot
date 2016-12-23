@@ -1,0 +1,78 @@
+.TH ESCHALOT 1 "2016-12-22"
+.SH NAME
+eschalot \- command\-line tool for generating tor hidden service (.onion)
+addresses matching a specific pattern
+
+.SH SYNOPSIS
+\fBeschalot\fP [flags] -p prefix
+.br
+\fBeschalot\fP [flags] -f wordlist
+.br
+\fBeschalot\fP [flags] -r regular_expression
+
+.SH DESCRIPTION
+\fBeschalot\fP is a command\-line tool for generating tor .onion addresses
+matching a specific pattern. It supports matching a single prefix and
+wordlist-based matching.
+
+Keys are output on STDOUT and all other output is on STDERR.
+
+.SH OPTIONS
+.TP
+\fI\-c\fP
+Continue searching for keys after the first one is found
+.TP
+\fI\-n\fP
+Limit search to numeric prefixes
+.TP
+\fI\-v\fP
+Verbose output
+.TP
+\fI\-t\fP
+Specify number of search threads to spawn. Default is 1; maximum is 100
+.TP
+\fI\-l\fP
+Length of prefix to search for \- useful with \fI-f\fP
+.TP
+\fI\-f\fP
+Specify a file containing a list of prefixes to search for
+.TP
+\fI\-p\fP
+Prefix to search for
+.TP
+\fI\-r\fP
+Regular expression to search for
+
+.SH EXAMPLE
+The following shell session demonstrates a search for a 5-character prefix
+with keys saved to the file example.txt.
+
+.nf
+$ eschalot -t 8 -cvp hello > example.txt
+Verbose, continuous, no digits, 8 threads, prefixes 5-5 characters long.
+Thread #1 started.
+Thread #2 started.
+Thread #3 started.
+Thread #4 started.
+Thread #5 started.
+Thread #6 started.
+Thread #7 started.
+Thread #8 started.
+Running, collecting performance data...
+Found a key for hello (5) \- helloelo4ps3dff5.onion
+Found a key for hello (5) \- helloppnnovwwrmz.onion
+Found a key for hello (5) \- hellopppvc4nmylb.onion
+Found a key for hello (5) \- hello4idl2ccfcow.onion
+Found a key for hello (5) \- hellonioy4cd2thv.onion
+Found a key for hello (5) \- helloapgkjrpkgub.onion
+Found a key for hello (5) \- helloxsjnfv3r546.onion
+Found a key for hello (5) \- helloyvcih5eed4f.onion
+Found a key for hello (5) \- hellorh3m4prk6ls.onion
+Found a key for hello (5) \- helloal372ockyhp.onion
+Total hashes: 221646724, running time: 10 seconds, hashes per second: 22164672
+Found a key for hello (5) \- hello4fu5c5szci6.onion
+^C
+.fi
+
+A number of keys were found and saved with their corresponding .onion
+addresses to example.txt.
